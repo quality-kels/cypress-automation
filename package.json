@@ -1,5 +1,5 @@
 {
-  "name": "cypress-portfolio",
+  "name": "cypress-automation",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,6 +11,10 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "cypress": "^15.11.0"
+    "@eslint/js": "^10.0.1",
+    "cypress": "^15.11.0",
+    "eslint": "^10.0.3",
+    "eslint-plugin-cypress": "^6.2.0",
+    "globals": "^17.4.0"
   }
 }
