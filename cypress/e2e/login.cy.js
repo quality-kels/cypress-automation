@@ -1,40 +1,52 @@
-import LoginPage from '../pages/LoginPage'
+import LoginPage from "../pages/LoginPage";
 
-describe('Login', () => {
+describe("Login", () => {
   beforeEach(() => {
-    LoginPage.visit()
-  })
+    LoginPage.visit();
+  });
 
-  it('should login with valid credentials', () => {
-    LoginPage.login('standard_user', 'secret_sauce')
-    cy.url().should('include', '/inventory')
-  })
+  context("Happy path", () => {
+    it("should login with valid credentials", () => {
+      LoginPage.login(Cypress.env("USERNAME"), Cypress.env("PASSWORD"));
+      cy.location("pathname").should("eq", "/inventory.html");
+    });
 
-  it('should show error with invalid password', () => {
-    LoginPage.login('standard_user', 'wrong_password')
-    LoginPage.errorMessage.should('be.visible')
-  })
+    it("should login with valid credentials after an error", () => {
+      LoginPage.login("wrong_user", Cypress.env("PASSWORD"));
+      LoginPage.errorMessage.should("be.visible");
+      LoginPage.clearLogin();
+      LoginPage.login("standard_user", "secret_sauce");
+      cy.location("pathname").should("eq", "/inventory.html");
+    });
+  });
 
-  it('should show error with invalid username', () => {
-    LoginPage.login('wrong_user', 'secret_sauce')
-    LoginPage.errorMessage.should('be.visible')
-  })
+  context("Error states", () => {
+    it("should show error message for invalid password", () => {
+      LoginPage.login(Cypress.env("USERNAME"), "wrong_password");
+      LoginPage.errorMessage
+        .should("be.visible")
+        .and("contain.text", "Username and password do not match");
+    });
 
-  it('should show error with no credentials', () => {
-    LoginPage.loginButton.click()
-    LoginPage.errorMessage.should('be.visible')
-  })
+    it("should show error message for invalid username", () => {
+      LoginPage.login("wrong_user", Cypress.env("PASSWORD"));
+      LoginPage.errorMessage
+        .should("be.visible")
+        .and("contain.text", "Username and password do not match");
+    });
 
-  it('should show error with locked account', () => {
-    LoginPage.login('locked_out_user', 'secret_sauce')
-    LoginPage.errorMessage.should('be.visible')
-  })
+    it("should show error message when no credentials are entered", () => {
+      LoginPage.loginButton.click();
+      LoginPage.errorMessage
+        .should("be.visible")
+        .and("contain.text", "Username is required");
+    });
 
-  it('should login  with valid credentials after error', () => {
-    LoginPage.login('wrong_user', 'secret_sauce')
-    LoginPage.errorMessage.should('be.visible')
-    LoginPage.clearLogin()
-    LoginPage.login('standard_user', 'secret_sauce')
-    cy.url().should('include', '/inventory')
-  }) 
-})
+    it("should show error message for locked account", () => {
+      LoginPage.login(Cypress.env("LOCKED_USERNAME"), Cypress.env("PASSWORD"));
+      LoginPage.errorMessage
+        .should("be.visible")
+        .and("contain.text", "Sorry, this user has been locked out");
+    });
+  });
+});
