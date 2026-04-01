@@ -7,52 +7,61 @@ describe("Cart", () => {
 
   context("Adding items", () => {
     it("should add an item to the cart", () => {
-      cy.addToCart("Sauce Labs Backpack");
-      cy.get(".shopping_cart_badge").should("have.text", "1");
-      cy.goToCart();
-      cy.verifyItemInCart("Sauce Labs Backpack");
-      cy.verifyCartCount(1);
+      cy.fixture("products").then((products) => {
+        cy.addToCart(products.backpack.name);
+        cy.get(".shopping_cart_badge").should("have.text", "1");
+        cy.goToCart();
+        cy.verifyItemInCart(products.backpack.name);
+        cy.verifyCartCount(1);
+      });
     });
 
     it("should add two different items to the cart", () => {
-      cy.addToCart("Sauce Labs Backpack");
-      cy.addToCart("Sauce Labs Bike Light");
-      cy.get(".shopping_cart_badge").should("have.text", "2");
-      cy.goToCart();
-      cy.verifyItemInCart("Sauce Labs Backpack");
-      cy.verifyItemInCart("Sauce Labs Bike Light");
-      cy.verifyCartCount(2);
+      cy.fixture("products").then((products) => {
+        cy.addToCart(products.backpack.name);
+        cy.addToCart(products.bikeLight.name);
+        cy.get(".shopping_cart_badge").should("have.text", "2");
+        cy.goToCart();
+        cy.verifyItemInCart(products.backpack.name);
+        cy.verifyItemInCart(products.bikeLight.name);
+        cy.verifyCartCount(2);
+      });
     });
   });
 
   context("Removing items", () => {
     it("should remove an item from the cart page", () => {
-      cy.addToCart("Sauce Labs Backpack");
-      cy.addToCart("Sauce Labs Bike Light");
-      cy.get(".shopping_cart_badge").should("have.text", "2");
-      cy.removeItem("Sauce Labs Backpack", "cart");
-      cy.get(".shopping_cart_badge").should("have.text", "1");
-      cy.verifyItemNotInCart("Sauce Labs Backpack");
-      cy.verifyItemInCart("Sauce Labs Bike Light");
+      cy.fixture("products").then((products) => {
+        cy.addToCart(products.backpack.name);
+        cy.addToCart(products.bikeLight.name);
+        cy.get(".shopping_cart_badge").should("have.text", "2");
+        cy.removeItem(products.backpack.name, "cart");
+        cy.get(".shopping_cart_badge").should("have.text", "1");
+        cy.verifyItemNotInCart(products.backpack.name);
+        cy.verifyItemInCart(products.bikeLight.name);
+      });
     });
 
     it("should remove an item from the inventory page", () => {
-      cy.addToCart("Sauce Labs Backpack");
-      cy.addToCart("Sauce Labs Bike Light");
-      cy.get(".shopping_cart_badge").should("have.text", "2");
-      cy.removeItem("Sauce Labs Backpack", "inventory");
-      cy.get(".shopping_cart_badge").should("have.text", "1");
-      // navigate to cart and verify correct item remains
-      cy.goToCart();
-      cy.verifyItemNotInCart("Sauce Labs Backpack");
-      cy.verifyItemInCart("Sauce Labs Bike Light");
+      cy.fixture("products").then((products) => {
+        cy.addToCart(products.backpack.name);
+        cy.addToCart(products.bikeLight.name);
+        cy.get(".shopping_cart_badge").should("have.text", "2");
+        cy.removeItem(products.backpack.name, "inventory");
+        cy.get(".shopping_cart_badge").should("have.text", "1");
+        cy.goToCart();
+        cy.verifyItemNotInCart(products.backpack.name);
+        cy.verifyItemInCart(products.bikeLight.name);
+      });
     });
 
     it("should remove all items from the cart page", () => {
-      cy.addToCart("Sauce Labs Backpack");
-      cy.get(".shopping_cart_badge").should("have.text", "1");
-      cy.removeItem("Sauce Labs Backpack", "cart");
-      cy.get(".cart_item").should("not.exist");
+      cy.fixture("products").then((products) => {
+        cy.addToCart(products.backpack.name);
+        cy.get(".shopping_cart_badge").should("have.text", "1");
+        cy.removeItem(products.backpack.name, "cart");
+        cy.get(".cart_item").should("not.exist");
+      });
     });
   });
 
