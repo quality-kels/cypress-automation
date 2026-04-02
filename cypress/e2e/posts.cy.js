@@ -2,7 +2,7 @@ describe("Posts Api", () => {
   const baseUrl = "https://jsonplaceholder.typicode.com";
 
   context("live requests", () => {
-    it("returns a 200 for valid id", () => {
+    it("returns 200 for valid id", () => {
       cy.intercept("GET", `${baseUrl}/posts/1`).as("getPost");
       cy.window().then((win) => {
         return win.fetch(`${baseUrl}/posts/1`);
@@ -15,7 +15,7 @@ describe("Posts Api", () => {
       });
     });
 
-    it("creates a post with the correct data", () => {
+    it("returns 201 for valid post payload with id", () => {
       cy.intercept("POST", `${baseUrl}/posts`).as("createPost");
       cy.window().then((win) => {
         return win.fetch(`${baseUrl}/posts`, {
@@ -38,20 +38,20 @@ describe("Posts Api", () => {
   });
 
   context("mocking responses", () => {
-    it("returns fixture data when mocked", () => {
+    it("mocks response using fixture data", () => {
       cy.intercept("GET", `${baseUrl}/posts/1`, {
         fixture: "products.json",
-      }).as("stubbedPost");
+      }).as("fixturePost");
       cy.window().then((win) => {
         return win.fetch(`${baseUrl}/posts/1`);
       });
-      cy.wait("@stubbedPost").then(({ response }) => {
+      cy.wait("@fixturePost").then(({ response }) => {
         expect(response.body).to.have.property("backpack");
         expect(response.body.backpack.name).to.eq("Sauce Labs Backpack");
       });
     });
 
-    it("returns 500 for server errors", () => {
+    it("mocks 500 server error response", () => {
       cy.intercept("GET", `${baseUrl}/posts/1`, {
         statusCode: 500,
         body: { error: "Internal Server Error" },
@@ -65,7 +65,7 @@ describe("Posts Api", () => {
       });
     });
 
-    it("returns 404 for invalid id", () => {
+    it("mocks 404 response for invalid post id", () => {
       cy.intercept("GET", `${baseUrl}/posts/99999`, {
         statusCode: 404,
         body: {},
