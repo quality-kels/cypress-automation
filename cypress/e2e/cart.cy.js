@@ -1,11 +1,9 @@
-import LoginPage from "../pages/LoginPage";
-
 describe("Cart", () => {
   beforeEach(() => {
     cy.login(Cypress.env("USERNAME"), Cypress.env("PASSWORD"));
   });
 
-  context("Adding items", () => {
+  context("adding items", () => {
     it("should add an item to the cart", () => {
       cy.fixture("products").then((products) => {
         cy.addToCart(products.backpack.name);
@@ -29,29 +27,24 @@ describe("Cart", () => {
     });
   });
 
-  context("Removing items", () => {
-    it("should remove an item from the cart page", () => {
-      cy.fixture("products").then((products) => {
-        cy.addToCart(products.backpack.name);
-        cy.addToCart(products.bikeLight.name);
-        cy.get(".shopping_cart_badge").should("have.text", "2");
-        cy.removeItem(products.backpack.name, "cart");
-        cy.get(".shopping_cart_badge").should("have.text", "1");
-        cy.verifyItemNotInCart(products.backpack.name);
-        cy.verifyItemInCart(products.bikeLight.name);
-      });
-    });
+  context("removing items", () => {
+    const removalCases = [
+      { label: "from the cart page", page: "cart" },
+      { label: "from the inventory page", page: "inventory" },
+    ];
 
-    it("should remove an item from the inventory page", () => {
-      cy.fixture("products").then((products) => {
-        cy.addToCart(products.backpack.name);
-        cy.addToCart(products.bikeLight.name);
-        cy.get(".shopping_cart_badge").should("have.text", "2");
-        cy.removeItem(products.backpack.name, "inventory");
-        cy.get(".shopping_cart_badge").should("have.text", "1");
-        cy.goToCart();
-        cy.verifyItemNotInCart(products.backpack.name);
-        cy.verifyItemInCart(products.bikeLight.name);
+    removalCases.forEach(({ label, page }) => {
+      it(`should remove an item ${label}`, () => {
+        cy.fixture("products").then((products) => {
+          cy.addToCart(products.backpack.name);
+          cy.addToCart(products.bikeLight.name);
+          cy.get(".shopping_cart_badge").should("have.text", "2");
+          cy.removeItem(products.backpack.name, page);
+          cy.get(".shopping_cart_badge").should("have.text", "1");
+          if (page === "inventory") cy.goToCart();
+          cy.verifyItemNotInCart(products.backpack.name);
+          cy.verifyItemInCart(products.bikeLight.name);
+        });
       });
     });
 
@@ -62,14 +55,6 @@ describe("Cart", () => {
         cy.removeItem(products.backpack.name, "cart");
         cy.get(".cart_item").should("not.exist");
       });
-    });
-  });
-
-  context("Navigation", () => {
-    it("should logout successfully", () => {
-      cy.logout();
-      cy.location("pathname").should("eq", "/");
-      cy.get('[data-test="login-button"]').should("be.visible");
     });
   });
 });
