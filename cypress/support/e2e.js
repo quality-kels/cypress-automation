@@ -14,4 +14,13 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands'
+import "./commands";
+
+beforeEach(() => {
+  // Sauce Demo persists session in cookies, localStorage, and IndexedDB.
+  // Clear all three to prevent session leaking between tests.
+  cy.clearAllCookies();
+  cy.clearAllLocalStorage();
+  cy.clearAllSessionStorage();
+  indexedDB.deleteDatabase("keyval-store");
+});

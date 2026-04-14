@@ -1,36 +1,35 @@
 class LoginPage {
-    // Selectors
-    get usernameInput() {
-      return cy.get('[data-test="username"]')
-    }
-  
-    get passwordInput() {
-      return cy.get('[data-test="password"]')
-    }
-  
-    get loginButton() {
-      return cy.get('[data-test="login-button"]')
-    }
-  
-    get errorMessage() {
-      return cy.get('[data-test="error"]')
-    }
-  
-    // Actions
-    visit() {
-      cy.visit('/')
-    }
-  
-    login(username, password) {
-      this.usernameInput.type(username)
-      this.passwordInput.type(password)
-      this.loginButton.click()
-    }
-
-    clearLogin() {
-        this.usernameInput.clear()
-        this.passwordInput.clear()
-    }
+  get usernameInput() {
+    return cy.get('[data-test="username"]');
   }
-  
-  export default new LoginPage()
+  get passwordInput() {
+    return cy.get('[data-test="password"]');
+  }
+  get loginButton() {
+    return cy.get('[data-test="login-button"]');
+  }
+  get errorMessage() {
+    return cy.get('[data-test="error"]');
+  }
+
+  visit() {
+    cy.visit("/");
+    cy.get('[data-test="login-button"]', { timeout: 15000 }).should(
+      "be.visible",
+    );
+  }
+
+  login(username, password) {
+    this.visit();
+    this.usernameInput.type(username);
+    this.passwordInput.type(password);
+    this.loginButton.click();
+  }
+
+  clearLogin() {
+    this.usernameInput.clear();
+    this.passwordInput.clear();
+  }
+}
+
+export default new LoginPage();

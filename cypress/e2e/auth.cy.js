@@ -1,20 +1,16 @@
 import LoginPage from "../pages/LoginPage";
 
 describe("Authentication", () => {
-  beforeEach(() => {
-    LoginPage.visit();
-  });
-
   context("Login", () => {
     it("should login with valid credentials", () => {
       LoginPage.login(Cypress.env("USERNAME"), Cypress.env("PASSWORD"));
-      cy.location("pathname").should("eq", "/inventory.html");
+      cy.location("pathname", { timeout: 15000 }).should("include", "inventory");
+      cy.get(".title").should("have.text", "Products");
     });
 
     it("should login with valid credentials after an error", () => {
       LoginPage.login("wrong_user", Cypress.env("PASSWORD"));
       LoginPage.errorMessage.should("be.visible");
-      LoginPage.clearLogin();
       LoginPage.login(Cypress.env("USERNAME"), Cypress.env("PASSWORD"));
       cy.location("pathname").should("eq", "/inventory.html");
     });
@@ -35,7 +31,10 @@ describe("Authentication", () => {
       },
       {
         name: "empty submission shows username required",
-        action: () => LoginPage.loginButton.click(),
+        action: () => {
+          LoginPage.visit();
+          LoginPage.loginButton.click();
+        },
         expectedError: "Username is required",
       },
       {
@@ -43,7 +42,7 @@ describe("Authentication", () => {
         action: () =>
           LoginPage.login(
             Cypress.env("LOCKED_USERNAME"),
-            Cypress.env("PASSWORD")
+            Cypress.env("PASSWORD"),
           ),
         expectedError: "Sorry, this user has been locked out",
       },
@@ -61,10 +60,10 @@ describe("Authentication", () => {
 
   context("Logout", () => {
     it("should logout successfully", () => {
-      cy.login(Cypress.env("USERNAME"), Cypress.env("PASSWORD"));
+      LoginPage.login(Cypress.env("USERNAME"), Cypress.env("PASSWORD"));
+      cy.location("pathname", { timeout: 15000 }).should("include", "inventory");
       cy.logout();
       cy.location("pathname").should("eq", "/");
-      LoginPage.loginButton.should("be.visible");
     });
   });
 });

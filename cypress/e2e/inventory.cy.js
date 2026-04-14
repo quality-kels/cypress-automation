@@ -2,7 +2,6 @@ import LoginPage from "../pages/LoginPage";
 
 describe("Inventory", () => {
   beforeEach(() => {
-    LoginPage.visit();
     LoginPage.login(Cypress.env("USERNAME"), Cypress.env("PASSWORD"));
   });
   context("Page display", () => {
