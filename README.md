@@ -26,6 +26,17 @@ cypress/
 └── e2e.js
 ```
 
+## CI/CD
+
+This project runs on GitHub Actions on every push and pull request to `main`.
+
+The pipeline:
+
+- Runs all 20 Cypress tests headless in Chrome on Ubuntu
+- Uploads screenshots on failure as artifacts
+
+**Note:** Credentials are stored in `cypress.config.js` env block (Sauce Demo uses publicly known fake credentials). Session state is cleared before each test via `e2e.js` global `beforeEach` (cookies, localStorage, sessionStorage, and IndexedDB).
+
 ## Key Concepts Demonstrated
 
 - **Page Object Model** — selectors and actions abstracted into `LoginPage.js`
