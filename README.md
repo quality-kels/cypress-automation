@@ -1,5 +1,7 @@
 # Cypress Automation
 
+![Cypress Tests](https://github.com/quality-kels/cypress-automation/actions/workflows/cypress.yml/badge.svg)
+
 Cypress test automation suite targeting [Sauce Demo](https://www.saucedemo.com). Built as part of a structured QA skill-build to practice automation patterns I'd use on the job featuring POM, custom commands, fixtures, and network interception.
 
 ## Tech Stack
