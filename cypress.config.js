@@ -1,5 +1,12 @@
 const { defineConfig } = require("cypress");
 module.exports = defineConfig({
+  reporter: "cypress-mochawesome-reporter",
+  reporterOptions: {
+    reportDir: "cypress/reports",
+    overwrite: false,
+    html: true,
+    json: false,
+  },
   e2e: {
     baseUrl: "https://www.saucedemo.com",
     defaultCommandTimeout: 10000,
@@ -13,6 +20,8 @@ module.exports = defineConfig({
       PASSWORD: "secret_sauce",
       LOCKED_USERNAME: "locked_out_user",
     },
-    setupNodeEvents(on, config) {},
+    setupNodeEvents(on, config) {
+      require("cypress-mochawesome-reporter/plugin")(on);
+    },
   },
 });

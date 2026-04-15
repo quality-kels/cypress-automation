@@ -15,6 +15,7 @@
 
 // Import commands.js using ES2015 syntax:
 import "./commands";
+import "cypress-mochawesome-reporter/register";
 
 beforeEach(() => {
   // Sauce Demo persists session in cookies, localStorage, and IndexedDB.
