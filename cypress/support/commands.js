@@ -1,14 +1,5 @@
 // Custom Commands for Sauce Demo
 
-// Login command - reusable across all test files
-Cypress.Commands.add("login", (username, password) => {
-  cy.visit("/");
-  cy.get('[data-test="login-button"]', { timeout: 15000 }).should("be.visible");
-  cy.get('[data-test="username"]').type(username);
-  cy.get('[data-test="password"]').type(password);
-  cy.get('[data-test="login-button"]').click();
-});
-
 // Add item to cart by name
 Cypress.Commands.add("addToCart", (itemName) => {
   cy.contains(itemName)
@@ -33,6 +24,7 @@ Cypress.Commands.add("verifyItemNotInCart", (itemName) => {
   cy.get(".cart_item").should("not.contain", itemName);
 });
 
+// Remove item from cart or inventory page
 Cypress.Commands.add("removeItem", (itemName, location) => {
   if (location === "inventory") {
     cy.contains(itemName)
@@ -50,6 +42,25 @@ Cypress.Commands.add("removeItem", (itemName, location) => {
 Cypress.Commands.add("verifyCartCount", (expectedCount) => {
   cy.get(".cart_item").should("have.length", expectedCount);
   cy.url().should("include", "/cart");
+});
+
+// Fill checkout info form and proceed to order overview
+Cypress.Commands.add("fillCheckoutInfo", (firstName, lastName, postalCode) => {
+  cy.get('[data-test="firstName"]').type(firstName);
+  cy.get('[data-test="lastName"]').type(lastName);
+  cy.get('[data-test="postalCode"]').type(postalCode);
+  cy.get('[data-test="continue"]').click();
+});
+
+// Sort inventory by option value (e.g. "za", "lohi", "hilo", "az")
+Cypress.Commands.add("sortBy", (option) => {
+  cy.get(".product_sort_container").select(option);
+});
+
+// Navigate to a product detail page by item name
+Cypress.Commands.add("goToProductDetail", (itemName) => {
+  cy.contains(".inventory_item_name", itemName).click();
+  cy.location("pathname").should("include", "inventory-item");
 });
 
 // Logout command

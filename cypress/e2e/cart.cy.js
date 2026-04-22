@@ -1,4 +1,5 @@
 import LoginPage from "../pages/LoginPage";
+import CartPage from "../pages/CartPage";
 
 describe("Cart", () => {
   beforeEach(() => {
@@ -9,7 +10,7 @@ describe("Cart", () => {
     it("should add an item to the cart", () => {
       cy.fixture("products").then((products) => {
         cy.addToCart(products.backpack.name);
-        cy.get(".shopping_cart_badge").should("have.text", "1");
+        CartPage.badge.should("have.text", "1");
         cy.goToCart();
         cy.verifyItemInCart(products.backpack.name);
         cy.verifyCartCount(1);
@@ -20,7 +21,7 @@ describe("Cart", () => {
       cy.fixture("products").then((products) => {
         cy.addToCart(products.backpack.name);
         cy.addToCart(products.bikeLight.name);
-        cy.get(".shopping_cart_badge").should("have.text", "2");
+        CartPage.badge.should("have.text", "2");
         cy.goToCart();
         cy.verifyItemInCart(products.backpack.name);
         cy.verifyItemInCart(products.bikeLight.name);
@@ -40,9 +41,9 @@ describe("Cart", () => {
         cy.fixture("products").then((products) => {
           cy.addToCart(products.backpack.name);
           cy.addToCart(products.bikeLight.name);
-          cy.get(".shopping_cart_badge").should("have.text", "2");
+          CartPage.badge.should("have.text", "2");
           cy.removeItem(products.backpack.name, page);
-          cy.get(".shopping_cart_badge").should("have.text", "1");
+          CartPage.badge.should("have.text", "1");
           if (page === "inventory") cy.goToCart();
           cy.verifyItemNotInCart(products.backpack.name);
           cy.verifyItemInCart(products.bikeLight.name);
@@ -53,9 +54,9 @@ describe("Cart", () => {
     it("should remove all items from the cart page", () => {
       cy.fixture("products").then((products) => {
         cy.addToCart(products.backpack.name);
-        cy.get(".shopping_cart_badge").should("have.text", "1");
+        CartPage.badge.should("have.text", "1");
         cy.removeItem(products.backpack.name, "cart");
-        cy.get(".cart_item").should("not.exist");
+        CartPage.items.should("not.exist");
       });
     });
   });
