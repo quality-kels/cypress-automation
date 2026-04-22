@@ -1,6 +1,8 @@
+import LoginPage from "../pages/LoginPage";
+
 describe("Cart", () => {
   beforeEach(() => {
-    cy.login(Cypress.env("USERNAME"), Cypress.env("PASSWORD"));
+    LoginPage.login(Cypress.env("USERNAME"), Cypress.env("PASSWORD"));
   });
 
   context("adding items", () => {

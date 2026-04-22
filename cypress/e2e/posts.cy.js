@@ -40,14 +40,15 @@ describe("Posts Api", () => {
   context("mocking responses", () => {
     it("mocks response using fixture data", () => {
       cy.intercept("GET", `${baseUrl}/posts/1`, {
-        fixture: "products.json",
+        fixture: "post.json",
       }).as("fixturePost");
       cy.window().then((win) => {
         return win.fetch(`${baseUrl}/posts/1`);
       });
       cy.wait("@fixturePost").then(({ response }) => {
-        expect(response.body).to.have.property("backpack");
-        expect(response.body.backpack.name).to.eq("Sauce Labs Backpack");
+        expect(response.body).to.have.property("id", 1);
+        expect(response.body).to.have.property("userId", 1);
+        expect(response.body.title).to.be.a("string");
       });
     });
 
